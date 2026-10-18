@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 VERSION="01.04.04"
 BUILD="17"
 # GitHub repo whose Releases host the zip and appcast.xml.
-REPO="NIAF-DW/Specter-macOS"
+REPO="WolfByteWorks/Specter"
 # Sparkle public key. The private key is stored only locked (Signing/sparkle-key.locked); it is
 # unlocked through the "Specter Sparkle" SSH key in Bitwarden to sign the update feed (never Keychain).
 ED_KEY="wX6AfTLpt7q5OcZwMeVxb5fJNY/vnNWP4XIkgq8RHvA="
