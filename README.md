@@ -58,19 +58,7 @@ Specter collects nothing and sends nothing about you. The only network traffic i
 log stream --info --predicate 'subsystem == "works.wolfbyte.Specter"'
 ```
 
-## Build from source
-
-Needs Xcode 26 (Swift 6) on an Apple silicon Mac.
-
-```bash
-git clone https://github.com/NIAF-DW/Specter-macOS.git
-cd Specter-macOS
-./build.sh
-```
-
-`build.sh` builds an arm64 release binary with SwiftPM, compiles the app icon (`Resources/AppIcon.icon`) with `actool`, assembles `Specter v<version>/Specter_v<version>.app` with Sparkle.framework, and signs it ad hoc. It then makes the release zip and a signed `appcast.xml`; that last step needs the project's Sparkle private key, so on your own machine it fails after the app is built. The `.app` it built works fine.
-
-### Project layout
+## Project layout
 
 - `Sources/Specter/main.swift`: menu bar item, timer, playback, updates
 - `Sources/Specter/About.swift`: About window
