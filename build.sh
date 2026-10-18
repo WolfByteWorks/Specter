@@ -32,6 +32,10 @@ cp -R Resources/1-second-of-silence.mp3 Resources/Logo.png Resources/MenuBarIcon
 xcrun actool Resources/AppIcon.icon --compile "$APP/Contents/Resources" --app-icon AppIcon \
     --platform macosx --minimum-deployment-target 13.0 \
     --output-partial-info-plist "${TMPDIR:-/tmp}/specter-actool-partial.plist" >/dev/null
+# actool can report errors and still exit 0, so make sure the icon is really there.
+if [ ! -f "$APP/Contents/Resources/Assets.car" ] || [ ! -f "$APP/Contents/Resources/AppIcon.icns" ]; then
+    echo "App icon was not compiled (actool). Not building a release without it." >&2; exit 1
+fi
 
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
