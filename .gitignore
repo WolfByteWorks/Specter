@@ -1,0 +1,14 @@
+.build/
+.DS_Store
+Specter v*/
+.claude/
+wolfsec-audit/
+Signing/
+
+# AI assistant instruction files: never in this repo
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+GROK.md
+.cursorrules
+.github/copilot-instructions.md
