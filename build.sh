@@ -4,8 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION="01.04.04"
-BUILD="17"
+VERSION="01.04.06"
+BUILD="18"
 # GitHub repo whose Releases host the zip and appcast.xml.
 REPO="WolfByteWorks/Specter"
 # Sparkle public key. The private key is stored only locked (Signing/sparkle-key.locked); it is

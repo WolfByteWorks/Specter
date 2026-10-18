@@ -2,6 +2,7 @@ import AppKit
 import AVFoundation
 import CoreImage
 import os
+import ServiceManagement
 import Sparkle
 
 // Plays a bundled second of silence on a timer so Bluetooth audio devices don't go to sleep.
@@ -133,6 +134,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             item.state = style == iconStyle ? .on : .off
         }
         menu.addItem(withTitle: "Menu Bar Icon", action: nil, keyEquivalent: "").submenu = styles
+        let login = menu.addItem(withTitle: "Start at Login", action: #selector(toggleStartAtLogin), keyEquivalent: "")
+        login.target = self
+        login.state = SMAppService.mainApp.status == .enabled ? .on : .off
         menu.addItem(.separator())
         menu.addItem(withTitle: "About Specter", action: #selector(showAbout), keyEquivalent: "").target = self
         menu.addItem(withTitle: "Check for Updates…", action: #selector(checkForUpdates), keyEquivalent: "").target = self
@@ -152,6 +156,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func toggle() { isRunning ? pause() : start() }
+
+    /// Adds or removes Specter as a login item (shown in System Settings > General > Login Items).
+    @objc private func toggleStartAtLogin() {
+        let service = SMAppService.mainApp
+        do {
+            if service.status == .enabled {
+                try service.unregister()
+            } else {
+                try service.register()
+            }
+        } catch {
+            log.error("Start at Login change failed: \(error.localizedDescription, privacy: .public)")
+            let alert = NSAlert()
+            alert.messageText = "Couldn't change Start at Login"
+            alert.informativeText = "\(error.localizedDescription)\n\nYou can add Specter in System Settings > General > Login Items."
+            NSApp.activate(ignoringOtherApps: true)
+            alert.runModal()
+        }
+    }
 
     @objc private func chooseIconStyle(_ sender: NSMenuItem) {
         guard let raw = sender.representedObject as? String, let style = IconStyle(rawValue: raw) else { return }

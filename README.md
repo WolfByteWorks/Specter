@@ -37,13 +37,14 @@ Many Bluetooth speakers and headphones go to sleep after a few minutes of silenc
    - Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/Specter_v*.app`
 4. The Specter icon appears in your menu bar and it starts running right away.
 
-To start Specter when you log in, add it in **System Settings > General > Login Items**.
+To start Specter when you log in, choose **Start at Login** in its menu.
 
 ## Use
 
-- **Click** the icon for the menu: current state, Pause/Start, the interval, Menu Bar Icon, About, Check for Updates and Quit.
+- **Click** the icon for the menu: current state, Pause/Start, the interval, Menu Bar Icon, Start at Login, About, Check for Updates and Quit.
 - **Right-click** the icon to pause or resume right away.
 - **Menu Bar Icon** picks the icon style: GhostDragon, Ember or Snow. Your choice is saved.
+- **Start at Login** makes Specter start when you log in (it also shows in System Settings > General > Login Items).
 - **Check for Updates…** looks for a newer version now. Specter also checks once a day by itself, downloads updates in the background and installs them when it quits.
 
 <p align="center">
@@ -78,6 +79,9 @@ The app reads `releases/latest/download/appcast.xml`, so the newest release is a
 The code and the silence file are under the MIT License (see [LICENSE](LICENSE)). The Specter and WolfByte.Works names, logos and artwork (the app icon, `Resources/Logo.png`, `Resources/MenuBarIcon.png`, `Resources/Branding/*.png` and `Design/`) are not covered by it. The fonts are under the SIL Open Font License (see `Resources/Branding/Fonts`), and Sparkle is under its own MIT license, which ships inside the app (`Contents/Resources/Licenses/Sparkle-LICENSE.txt`).
 
 ## Changelog
+
+### 01.04.06 (build 18)
+- Start at Login option in the menu.
 
 ### 01.04.04 (build 17)
 - First public release.
