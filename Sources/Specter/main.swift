@@ -5,7 +5,9 @@ import os
 import ServiceManagement
 import Sparkle
 
-// Plays a bundled second of silence on a timer so Bluetooth audio devices don't go to sleep.
+// Plays a bundled one-second keep-alive tone on a timer so Bluetooth audio devices don't go to sleep.
+// The tone is 25 Hz at -50 dB: too low and quiet to hear, but a real signal (soundbars such as the
+// JBL BAR 1000 ignore pure digital silence and go to standby after about 10 minutes).
 // Left-click the menu bar item for the menu, right-click to pause/resume.
 // Updates come through Sparkle (feed and key in Info.plist, written by build.sh).
 
@@ -91,10 +93,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var isRunning: Bool { timer != nil }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        if let url = Bundle.main.url(forResource: "1-second-of-silence", withExtension: "mp3") {
+        if let url = Bundle.main.url(forResource: "keep-alive-tone", withExtension: "mp3") {
             player = try? AVAudioPlayer(contentsOf: url)
         }
-        if player == nil { log.error("Could not load 1-second-of-silence.mp3") }
+        if player == nil { log.error("Could not load keep-alive-tone.mp3") }
 
         statusItem.button?.target = self
         statusItem.button?.action = #selector(statusItemClicked)
@@ -205,7 +207,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func play() {
         player?.currentTime = 0
         let ok = player?.play() ?? false
-        log.info("Played silence (ok: \(ok), interval: \(self.intervalMinutes) min)")
+        log.info("Played keep-alive tone (ok: \(ok), interval: \(self.intervalMinutes) min)")
     }
 
     private func updateIcon() {

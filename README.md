@@ -6,7 +6,7 @@
 
 <p align="center"><b>Keeps Bluetooth headphones and speakers awake on your Mac.</b></p>
 
-Many Bluetooth speakers and headphones go to sleep after a few minutes of silence, then cut off the start of the next sound or drop the connection. Specter sits in the menu bar and plays one second of silence every few minutes so they stay connected and ready. You hear nothing, and it uses next to no power.
+Many Bluetooth speakers and headphones go to sleep after a few minutes of silence, then cut off the start of the next sound or drop the connection. Specter sits in the menu bar and plays a one-second tone too low and quiet to hear (25 Hz at -50 dB) every few minutes so they stay connected and ready. It is a real signal rather than pure digital silence, because some soundbars (such as the JBL BAR 1000) ignore silence and go to standby anyway. You hear nothing, and it uses next to no power.
 
 <p align="center">
   <img src="docs/images/menu.png" width="420" alt="Specter menu: Running every 1 min, Pause, interval choices, Menu Bar Icon (GhostDragon, Ember, Snow), About Specter, Check for Updates, Quit Specter">
@@ -15,7 +15,7 @@ Many Bluetooth speakers and headphones go to sleep after a few minutes of silenc
 ## Features
 
 - Lives in the menu bar; no Dock icon, no windows in your way.
-- Plays a second of silence every 1, 5, 10 or 15 minutes (your choice is remembered).
+- Plays an inaudible one-second tone every 1, 5, 10 or 15 minutes (your choice is remembered).
 - Right-click the icon to pause or resume instantly.
 - Full-color icon while running, grey while paused:
   <img src="docs/images/menubar-running.png" height="28" alt="Running icon"> running, <img src="docs/images/menubar-paused.png" height="28" alt="Paused icon"> paused
@@ -63,7 +63,7 @@ log stream --info --predicate 'subsystem == "works.wolfbyte.Specter"'
 
 - `Sources/Specter/main.swift`: menu bar item, timer, playback, updates
 - `Sources/Specter/About.swift`: About window
-- `Resources/`: the silence MP3, app icon, logo and About-card artwork, and the Chakra Petch / Oxanium fonts
+- `Resources/`: the keep-alive tone MP3, app icon, logo and About-card artwork, and the Chakra Petch / Oxanium fonts
 - `Design/`: the full-size logo and color palette
 - `docs/images/`: screenshots for this README
 
@@ -76,9 +76,12 @@ The app reads `releases/latest/download/appcast.xml`, so the newest release is a
 
 ## License
 
-The code and the silence file are under the MIT License (see [LICENSE](LICENSE)). The Specter and WolfByte.Works names, logos and artwork (the app icon, `Resources/Logo.png`, `Resources/MenuBarIcon.png`, `Resources/Branding/*.png` and `Design/`) are not covered by it. The fonts are under the SIL Open Font License (see `Resources/Branding/Fonts`), and Sparkle is under its own MIT license, which ships inside the app (`Contents/Resources/Licenses/Sparkle-LICENSE.txt`).
+The code and the keep-alive tone file are under the MIT License (see [LICENSE](LICENSE)). The Specter and WolfByte.Works names, logos and artwork (the app icon, `Resources/Logo.png`, `Resources/MenuBarIcon.png`, `Resources/Branding/*.png` and `Design/`) are not covered by it. The fonts are under the SIL Open Font License (see `Resources/Branding/Fonts`), and Sparkle is under its own MIT license, which ships inside the app (`Contents/Resources/Licenses/Sparkle-LICENSE.txt`).
 
 ## Changelog
+
+### 01.04.08 (build 19)
+- Keeps soundbars awake: the silence file is now a quiet 25 Hz tone you can't hear. Soundbars such as the JBL BAR 1000 ignored pure silence and went to standby after about 10 minutes.
 
 ### 01.04.06 (build 18)
 - Start at Login option in the menu.

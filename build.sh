@@ -4,8 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION="01.04.06"
-BUILD="18"
+VERSION="01.04.08"
+BUILD="19"
 # GitHub repo whose Releases host the zip and appcast.xml.
 REPO="WolfByteWorks/Specter"
 # Sparkle public key. The private key is stored only locked (Signing/sparkle-key.locked); it is
@@ -26,10 +26,11 @@ cp -R "$PRODUCTS/Sparkle.framework" "$APP/Contents/Frameworks/"
 # Sparkle's license (with its bsdiff and ed25519 notices) must ship with the app.
 mkdir -p "$APP/Contents/Resources/Licenses"
 cp .build/artifacts/sparkle/Sparkle/LICENSE "$APP/Contents/Resources/Licenses/Sparkle-LICENSE.txt"
-cp -R Resources/1-second-of-silence.mp3 Resources/Logo.png Resources/MenuBarIcon.png Resources/MenuBarIconBlack.png Resources/MenuBarTemplate.png Resources/MenuBarTemplate@2x.png Resources/Branding "$APP/Contents/Resources/"
+cp -R Resources/keep-alive-tone.mp3 Resources/Logo.png Resources/MenuBarIcon.png Resources/MenuBarIconBlack.png Resources/MenuBarTemplate.png Resources/MenuBarTemplate@2x.png Resources/Branding "$APP/Contents/Resources/"
 # App icon in the macOS 26 icon format (Icon Composer). actool writes Assets.car plus an
-# AppIcon.icns fallback for older macOS.
-xcrun actool Resources/AppIcon.icon --compile "$APP/Contents/Resources" --app-icon AppIcon \
+# AppIcon.icns fallback for older macOS. Absolute paths: actool works through a helper that can keep
+# another folder as its working directory, so relative paths could land in a different repo.
+xcrun actool "$PWD/Resources/AppIcon.icon" --compile "$PWD/$APP/Contents/Resources" --app-icon AppIcon \
     --platform macosx --minimum-deployment-target 13.0 \
     --output-partial-info-plist "${TMPDIR:-/tmp}/specter-actool-partial.plist" >/dev/null
 # actool can report errors and still exit 0, so make sure the icon is really there.
