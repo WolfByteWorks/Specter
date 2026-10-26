@@ -98,6 +98,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if player == nil { log.error("Could not load keep-alive-tone.mp3") }
 
+        // Fixed text on purpose: macOS can pop a status item's tooltip up away from the menu bar
+        // when it changes while the pointer isn't on the icon. The live state is in the menu.
+        statusItem.button?.toolTip = "Specter"
         statusItem.button?.target = self
         statusItem.button?.action = #selector(statusItemClicked)
         statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -223,7 +226,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             statusItem.button?.image = isRunning ? blackIcon : blackPausedIcon
             statusItem.button?.appearsDisabled = false
         }
-        statusItem.button?.toolTip = isRunning ? "Specter: running" : "Specter: paused"
         statusItem.button?.setAccessibilityLabel(isRunning ? "Specter, running" : "Specter, paused")
     }
 }
