@@ -80,6 +80,9 @@ The code and the keep-alive tone file are under the MIT License (see [LICENSE](L
 
 ## Changelog
 
+### 01.04.10 (build 20)
+- The menu bar tooltip no longer pops up away from the menu bar over other apps. It now always reads "Specter"; whether it is running or paused is shown in the menu and by the icon.
+
 ### 01.04.08 (build 19)
 - Keeps soundbars awake: the silence file is now a quiet 25 Hz tone you can't hear. Soundbars such as the JBL BAR 1000 ignored pure silence and went to standby after about 10 minutes.
 
