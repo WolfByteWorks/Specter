@@ -2,11 +2,11 @@
   <img src="docs/images/app-icon.png" width="160" alt="Specter app icon">
 </p>
 
-<h1 align="center">Specter</h1>
+<h1 align="center">Specter<sup>™</sup></h1>
 
 <p align="center"><b>Keeps Bluetooth headphones and speakers awake on your Mac.</b></p>
 
-Many Bluetooth speakers and headphones go to sleep after a few minutes of silence, then cut off the start of the next sound or drop the connection. Specter sits in the menu bar and plays a one-second tone too low and quiet to hear (25 Hz at -50 dB) every few minutes so they stay connected and ready. It is a real signal rather than pure digital silence, because some soundbars (such as the JBL BAR 1000) ignore silence and go to standby anyway. You hear nothing, and it uses next to no power.
+Many Bluetooth speakers and headphones go to sleep after a few minutes of silence, then cut off the start of the next sound or drop the connection. Specter<sup>™</sup> sits in the menu bar and plays a one-second tone too low and quiet to hear (25 Hz at -50 dB) every few minutes so they stay connected and ready. It is a real signal rather than pure digital silence, because some soundbars (such as the JBL BAR 1000) ignore silence and go to standby anyway. You hear nothing, and it uses next to no power.
 
 <p align="center">
   <img src="docs/images/menu.png" width="420" alt="Specter menu: Running every 1 min, Pause, interval choices, Menu Bar Icon (GhostDragon, Ember, Snow), About Specter, Check for Updates, Quit Specter">
@@ -76,7 +76,7 @@ The app reads `releases/latest/download/appcast.xml`, so the newest release is a
 
 ## License
 
-The code and the keep-alive tone file are under the MIT License (see [LICENSE](LICENSE)). The Specter and WolfByte.Works names, logos and artwork (the app icon, `Resources/Logo.png`, `Resources/MenuBarIcon.png`, `Resources/Branding/*.png` and `Design/`) are not covered by it. The fonts are under the SIL Open Font License (see `Resources/Branding/Fonts`), and Sparkle is under its own MIT license, which ships inside the app (`Contents/Resources/Licenses/Sparkle-LICENSE.txt`).
+The code and the keep-alive tone file are under the MIT License (see [LICENSE](LICENSE)). The Specter<sup>™</sup> and WolfByte.Works<sup>™</sup> names, logos and artwork (the app icon, `Resources/Logo.png`, `Resources/MenuBarIcon.png`, `Resources/Branding/*.png` and `Design/`) are not covered by it. The fonts are under the SIL Open Font License (see `Resources/Branding/Fonts`), and Sparkle is under its own MIT license, which ships inside the app (`Contents/Resources/Licenses/Sparkle-LICENSE.txt`).
 
 ## Changelog
 
