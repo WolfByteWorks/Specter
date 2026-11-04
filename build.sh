@@ -4,8 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION="01.04.10"
-BUILD="20"
+VERSION="01.04.12"
+BUILD="21"
 # GitHub repo whose Releases host the zip and appcast.xml.
 REPO="WolfByteWorks/Specter"
 # Sparkle public key. The private key is stored only locked (Signing/sparkle-key.locked); it is
@@ -13,6 +13,11 @@ REPO="WolfByteWorks/Specter"
 ED_KEY="wX6AfTLpt7q5OcZwMeVxb5fJNY/vnNWP4XIkgq8RHvA="
 LOCKED_KEY="${SPARKLE_LOCKED_KEY:-Signing/sparkle-key.locked}"
 SPARKLE_BIN=".build/artifacts/sparkle/Sparkle/bin"
+# Developer ID signing and notarization use the "Developer ID Application" certificate and the
+# "Specter-notary" notarytool profile, both in the login Keychain. Without the certificate the app
+# is signed ad hoc and not notarized.
+SIGN_ID="Developer ID Application"
+NOTARY_PROFILE="Specter-notary"
 OUT="Specter v$VERSION"
 APP="$OUT/Specter_v$VERSION.app"
 
@@ -63,11 +68,27 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
-codesign --force --deep --sign - "$APP/Contents/Frameworks/Sparkle.framework"
-codesign --force --sign - "$APP"
+ZIP="$OUT/Specter_v$VERSION.zip"
+if security find-identity -v -p codesigning | grep -q "$SIGN_ID"; then
+    # Inside out, hardened runtime and secure timestamp on every program (Sparkle's documented order).
+    S="$APP/Contents/Frameworks/Sparkle.framework/Versions/B"
+    for item in "$S/XPCServices/Installer.xpc" "$S/XPCServices/Downloader.xpc" "$S/Autoupdate" "$S/Updater.app" \
+        "$APP/Contents/Frameworks/Sparkle.framework" "$APP"; do
+        codesign --force --options runtime --timestamp --sign "$SIGN_ID" "$item"
+    done
+    codesign --verify --strict --deep "$APP"
+    # Notarize: send a zip to Apple, wait for the result, then staple the ticket to the app.
+    ditto -c -k --keepParent "$APP" "$ZIP"
+    xcrun notarytool submit "$ZIP" --keychain-profile "$NOTARY_PROFILE" --wait
+    xcrun stapler staple "$APP"
+    echo "Signed with Developer ID and notarized"
+else
+    echo "No \"$SIGN_ID\" certificate in Keychain: signing ad hoc, not notarized."
+    codesign --force --deep --sign - "$APP/Contents/Frameworks/Sparkle.framework"
+    codesign --force --sign - "$APP"
+fi
 
 # Release zip and update feed for this version (upload both to the GitHub release v$VERSION).
-ZIP="$OUT/Specter_v$VERSION.zip"
 rm -f "$ZIP" "$OUT/appcast.xml"
 ditto -c -k --norsrc --noextattr --keepParent "$APP" "$ZIP"
 if python3 -I scripts/sparkle-key.py unlock "$LOCKED_KEY" | "$SPARKLE_BIN/generate_appcast" --ed-key-file - \
