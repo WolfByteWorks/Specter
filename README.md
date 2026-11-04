@@ -32,9 +32,7 @@ Many Bluetooth speakers and headphones go to sleep after a few minutes of silenc
 
 1. Download `Specter_v<version>.zip` from the [latest release](../../releases/latest).
 2. Unzip it and drag `Specter_v<version>.app` to your Applications folder.
-3. Open it. Specter isn't signed with an Apple Developer ID, so the first time macOS will say it can't check it for malicious software:
-   - Open **System Settings > Privacy & Security**, scroll down, and click **Open Anyway** next to the message about Specter. Then confirm.
-   - Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/Specter_v*.app`
+3. Open it. From 01.04.12 Specter is signed with an Apple Developer ID and notarized by Apple, so macOS opens it without a warning.
 4. The Specter icon appears in your menu bar and it starts running right away.
 
 To start Specter when you log in, choose **Start at Login** in its menu.
@@ -74,11 +72,16 @@ log stream --info --predicate 'subsystem == "works.wolfbyte.Specter"'
 
 The app reads `releases/latest/download/appcast.xml`, so the newest release is always the update feed. Signing the feed needs the Sparkle private key. It's stored only in locked form (`Signing/sparkle-key.locked`, never in Keychain) and `build.sh` unlocks it with `scripts/sparkle-key.py`, which asks the Bitwarden SSH agent to sign with the "Specter Sparkle" key. So Bitwarden must be unlocked with its SSH agent turned on; nothing is copied or typed. Without the Specter Sparkle key, updates can't be published.
 
+Developer ID signing needs the "Developer ID Application" certificate in the login Keychain, and notarization needs the notarytool profile `Specter-notary` (saved once with `xcrun notarytool store-credentials Specter-notary --apple-id <Apple ID> --team-id <Team ID>` and an app-specific password). Without the certificate, `build.sh` signs ad hoc and skips notarization.
+
 ## License
 
 The code and the keep-alive tone file are under the MIT License (see [LICENSE](LICENSE)). The Specter<sup>™</sup> and WolfByte.Works<sup>™</sup> names, logos and artwork (the app icon, `Resources/Logo.png`, `Resources/MenuBarIcon.png`, `Resources/Branding/*.png` and `Design/`) are not covered by it. The fonts are under the SIL Open Font License (see `Resources/Branding/Fonts`), and Sparkle is under its own MIT license, which ships inside the app (`Contents/Resources/Licenses/Sparkle-LICENSE.txt`).
 
 ## Changelog
+
+### 01.04.12 (build 21)
+- Signed with Developer ID and notarized by Apple, so macOS opens Specter without the "unidentified developer" warning.
 
 ### 01.04.10 (build 20)
 - The menu bar tooltip no longer pops up away from the menu bar over other apps. It now always reads "Specter"; whether it is running or paused is shown in the menu and by the icon.
