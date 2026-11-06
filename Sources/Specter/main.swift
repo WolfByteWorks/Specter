@@ -1,6 +1,7 @@
 import AppKit
 import AVFoundation
 import CoreImage
+import MediaPlayer
 import os
 import ServiceManagement
 import Sparkle
@@ -8,6 +9,9 @@ import Sparkle
 // Plays a bundled one-second keep-alive tone on a timer so Bluetooth audio devices don't go to sleep.
 // The tone is 25 Hz at -50 dB: too low and quiet to hear, but a real signal (soundbars such as the
 // JBL BAR 1000 ignore pure digital silence and go to standby after about 10 minutes).
+// While the tone plays, Specter is briefly the Mac's Now Playing app with state "playing", so the
+// speaker gets a Bluetooth (AVRCP) "playing" status. Some speakers, the JBL BAR 1000 among them,
+// start a 10-minute standby timer when they're told "paused", and quiet audio doesn't stop it.
 // Left-click the menu bar item for the menu, right-click to pause/resume.
 // Updates come through Sparkle (feed and key in Info.plist, written by build.sh).
 
@@ -103,6 +107,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.target = self
         statusItem.button?.action = #selector(statusItemClicked)
         statusItem.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
+        // macOS only lists an app as Now Playing if it handles play/pause. Specter has nothing to
+        // play or pause, so a press during its few seconds as Now Playing does nothing.
+        let commands = MPRemoteCommandCenter.shared()
+        for command in [commands.playCommand, commands.pauseCommand, commands.togglePlayPauseCommand] {
+            command.addTarget { _ in .noActionableNowPlayingItem }
+        }
         start()
     }
 
@@ -212,6 +222,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         player = toneURL.flatMap { try? AVAudioPlayer(contentsOf: $0) }
         let ok = player?.play() ?? false
         log.info("Played keep-alive tone (ok: \(ok), interval: \(self.intervalMinutes) min)")
+        guard ok else { return }
+
+        // Tell the speaker "playing" for the length of the tone, then hand Now Playing back to
+        // whichever app had it, so the media keys go to that app again.
+        let nowPlaying = MPNowPlayingInfoCenter.default()
+        nowPlaying.nowPlayingInfo = [MPMediaItemPropertyTitle: "Specter"]
+        nowPlaying.playbackState = .playing
+        Task {
+            try? await Task.sleep(for: .seconds(3))
+            nowPlaying.playbackState = .stopped
+            nowPlaying.nowPlayingInfo = nil
+        }
     }
 
     private func updateIcon() {
