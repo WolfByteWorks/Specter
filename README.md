@@ -16,6 +16,7 @@ Many Bluetooth speakers and headphones go to sleep after a few minutes of silenc
 
 - Lives in the menu bar; no Dock icon, no windows in your way.
 - Plays an inaudible one-second tone every 1, 5, 10 or 15 minutes (your choice is remembered).
+- While the tone plays, tells the speaker "playing" for a few seconds, so speakers that shut off 10 minutes after a pause stay on. Specter shows briefly as the Now Playing app.
 - Right-click the icon to pause or resume instantly.
 - Full-color icon while running, grey while paused:
   <img src="docs/images/menubar-running.png" height="28" alt="Running icon"> running, <img src="docs/images/menubar-paused.png" height="28" alt="Paused icon"> paused
@@ -79,6 +80,10 @@ Developer ID signing needs the "Developer ID Application" certificate in the log
 The code and the keep-alive tone file are under the MIT License (see [LICENSE](LICENSE)). The Specter<sup>™</sup> and WolfByte.Works<sup>™</sup> names, logos and artwork (the app icon, `Resources/Logo.png`, `Resources/MenuBarIcon.png`, `Resources/Branding/*.png` and `Design/`) are not covered by it. The fonts are under the SIL Open Font License (see `Resources/Branding/Fonts`), and Sparkle is under its own MIT license, which ships inside the app (`Contents/Resources/Licenses/Sparkle-LICENSE.txt`).
 
 ## Changelog
+
+### 01.04.16 (build 23)
+
+- Speakers such as the JBL BAR 1000 shut off 10 minutes after the Mac tells them "paused", even with the keep-alive tone playing. Specter now tells the speaker "playing" for a few seconds with each tone.
 
 ### 01.04.14 (build 22)
 - Keeps the speaker awake when Specter opens before the speaker connects (for example at login). The tone now always plays on the current output device instead of the one that was active when Specter started.
