@@ -80,6 +80,9 @@ The code and the keep-alive tone file are under the MIT License (see [LICENSE](L
 
 ## Changelog
 
+### 01.04.14 (build 22)
+- Keeps the speaker awake when Specter opens before the speaker connects (for example at login). The tone now always plays on the current output device instead of the one that was active when Specter started.
+
 ### 01.04.12 (build 21)
 - Signed with Developer ID and notarized by Apple, so macOS opens Specter without the "unidentified developer" warning.
 
