@@ -21,6 +21,7 @@ private let intervals = [1, 5, 10, 15]
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private var player: AVAudioPlayer?
+    private var toneURL: URL?
     private var timer: Timer?
     private var aboutWindow: AboutWindow?
     private let updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil,
@@ -93,10 +94,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var isRunning: Bool { timer != nil }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        if let url = Bundle.main.url(forResource: "keep-alive-tone", withExtension: "mp3") {
-            player = try? AVAudioPlayer(contentsOf: url)
-        }
-        if player == nil { log.error("Could not load keep-alive-tone.mp3") }
+        toneURL = Bundle.main.url(forResource: "keep-alive-tone", withExtension: "mp3")
+        if toneURL == nil { log.error("Could not load keep-alive-tone.mp3") }
 
         // Fixed text on purpose: macOS can pop a status item's tooltip up away from the menu bar
         // when it changes while the pointer isn't on the icon. The live state is in the menu.
@@ -208,7 +207,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func play() {
-        player?.currentTime = 0
+        // A new player each time: a player keeps the output device it was made on, so one made
+        // at login, before the speaker connects, would keep playing to the built-in speakers.
+        player = toneURL.flatMap { try? AVAudioPlayer(contentsOf: $0) }
         let ok = player?.play() ?? false
         log.info("Played keep-alive tone (ok: \(ok), interval: \(self.intervalMinutes) min)")
     }
