@@ -27,6 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var player: AVAudioPlayer?
     private var toneURL: URL?
     private var timer: Timer?
+    private var nowPlayingReset: Task<Void, Never>?
     private var aboutWindow: AboutWindow?
     private let updater = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil,
                                                        userDriverDelegate: nil)
@@ -219,18 +220,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func play() {
         // A new player each time: a player keeps the output device it was made on, so one made
         // at login, before the speaker connects, would keep playing to the built-in speakers.
-        player = toneURL.flatMap { try? AVAudioPlayer(contentsOf: $0) }
+        player = nil
+        if let toneURL {
+            do {
+                player = try AVAudioPlayer(contentsOf: toneURL)
+            } catch {
+                log.error("Could not open keep-alive tone: \(error.localizedDescription, privacy: .public)")
+            }
+        }
         let ok = player?.play() ?? false
         log.info("Played keep-alive tone (ok: \(ok), interval: \(self.intervalMinutes) min)")
-        guard ok else { return }
+        guard ok, let duration = player?.duration else { return }
 
-        // Tell the speaker "playing" for the length of the tone, then hand Now Playing back to
-        // whichever app had it, so the media keys go to that app again.
+        // Tell the speaker "playing" while the tone plays plus 2 seconds, then hand Now Playing back
+        // to whichever app had it, so the media keys go to that app again. A new tone cancels the
+        // previous hand-back, so it can't end the new tone's "playing" early.
         let nowPlaying = MPNowPlayingInfoCenter.default()
         nowPlaying.nowPlayingInfo = [MPMediaItemPropertyTitle: "Specter"]
         nowPlaying.playbackState = .playing
-        Task {
-            try? await Task.sleep(for: .seconds(3))
+        nowPlayingReset?.cancel()
+        nowPlayingReset = Task {
+            do { try await Task.sleep(for: .seconds(duration + 2)) } catch { return }
             nowPlaying.playbackState = .stopped
             nowPlaying.nowPlayingInfo = nil
         }

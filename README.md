@@ -81,6 +81,9 @@ The code and the keep-alive tone file are under the MIT License (see [LICENSE](L
 
 ## Changelog
 
+### 01.04.18 (build 24)
+- Tidier code, same behavior. Starting, resuming or changing the interval right after a tone can no longer end that tone's "playing" status early. If the tone file can't be opened, the log now says why.
+
 ### 01.04.16 (build 23)
 
 - Speakers such as the JBL BAR 1000 shut off 10 minutes after the Mac tells them "paused", even with the keep-alive tone playing. Specter now tells the speaker "playing" for a few seconds with each tone.

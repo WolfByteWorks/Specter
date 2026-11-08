@@ -4,8 +4,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-VERSION="01.04.16"
-BUILD="23"
+VERSION="01.04.18"
+BUILD="24"
+# Oldest macOS Specter runs on (also .macOS(.v13) in Package.swift). The About card reads it from Info.plist.
+MIN_MACOS="13.0"
 # GitHub repo whose Releases host the zip and appcast.xml.
 REPO="WolfByteWorks/Specter"
 # Sparkle public key. The private key is stored only locked (Signing/sparkle-key.locked); it is
@@ -31,12 +33,13 @@ cp -R "$PRODUCTS/Sparkle.framework" "$APP/Contents/Frameworks/"
 # Sparkle's license (with its bsdiff and ed25519 notices) must ship with the app.
 mkdir -p "$APP/Contents/Resources/Licenses"
 cp .build/artifacts/sparkle/Sparkle/LICENSE "$APP/Contents/Resources/Licenses/Sparkle-LICENSE.txt"
-cp -R Resources/keep-alive-tone.mp3 Resources/Logo.png Resources/MenuBarIcon.png Resources/MenuBarIconBlack.png Resources/MenuBarTemplate.png Resources/MenuBarTemplate@2x.png Resources/Branding "$APP/Contents/Resources/"
+# Everything in Resources ships with the app, except the app icon source, which actool compiles below.
+rsync -a --exclude AppIcon.icon --exclude .DS_Store Resources/ "$APP/Contents/Resources/"
 # App icon in the macOS 26 icon format (Icon Composer). actool writes Assets.car plus an
 # AppIcon.icns fallback for older macOS. Absolute paths: actool works through a helper that can keep
 # another folder as its working directory, so relative paths could land in a different repo.
 xcrun actool "$PWD/Resources/AppIcon.icon" --compile "$PWD/$APP/Contents/Resources" --app-icon AppIcon \
-    --platform macosx --minimum-deployment-target 13.0 \
+    --platform macosx --minimum-deployment-target "$MIN_MACOS" \
     --output-partial-info-plist "${TMPDIR:-/tmp}/specter-actool-partial.plist" >/dev/null
 # actool can report errors and still exit 0, so make sure the icon is really there.
 if [ ! -f "$APP/Contents/Resources/Assets.car" ] || [ ! -f "$APP/Contents/Resources/AppIcon.icns" ]; then
@@ -57,7 +60,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>$VERSION</string>
     <key>CFBundleVersion</key><string>$BUILD</string>
-    <key>LSMinimumSystemVersion</key><string>13.0</string>
+    <key>LSMinimumSystemVersion</key><string>$MIN_MACOS</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
     <key>SUFeedURL</key><string>https://github.com/$REPO/releases/latest/download/appcast.xml</string>
