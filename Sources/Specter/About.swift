@@ -192,6 +192,12 @@ struct AboutIDCard: View {
 
     private let info = Bundle.main.infoDictionary ?? [:]
 
+    /// LSMinimumSystemVersion from Info.plist (set by build.sh), "13.0" shown as "13".
+    private var minimumMacOS: String {
+        let version = info["LSMinimumSystemVersion"] as? String ?? ""
+        return version.hasSuffix(".0") ? String(version.dropLast(2)) : version
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack(alignment: .center, spacing: 24) {
@@ -258,7 +264,7 @@ struct AboutIDCard: View {
         VStack(alignment: .leading, spacing: 6) {
             field("Version", info["CFBundleShortVersionString"] as? String ?? "")
             field("Build", info["CFBundleVersion"] as? String ?? "")
-            field("Requires", "macOS 13 or later")
+            field("Requires", "macOS \(minimumMacOS) or later")
             field("Publisher", "WolfByte.Works")
             field("Designed and Built by", "WolfByte.Works")
             field("Copyright", "© 2026 WolfByte.Works")
@@ -363,7 +369,7 @@ struct AboutIDCard: View {
 enum WolfByteCodes {
     static let barcode: NSImage? = render("CICode128BarcodeGenerator", message: "wolfbyte.works",
                                           extra: ["inputQuietSpace": 0],
-                                          ink: NSColor(srgbRed: 0.294, green: 0.827, blue: 0.898, alpha: 1),
+                                          ink: NSColor(SpecterColor.aqua),
                                           paper: NSColor(srgbRed: 0, green: 0, blue: 0, alpha: 0), scale: 4)
     static let qr: NSImage? = render("CIQRCodeGenerator", message: "https://wolfbyte.works",
                                      extra: ["inputCorrectionLevel": "M"],

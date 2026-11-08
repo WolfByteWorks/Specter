@@ -41,7 +41,10 @@ def _call(sock, msg):
     n = struct.unpack(">I", head)[0]
     body = b""
     while len(body) < n:
-        body += sock.recv(n - len(body))
+        chunk = sock.recv(n - len(body))
+        if not chunk:
+            fail("the Bitwarden SSH agent closed the connection")
+        body += chunk
     return body
 
 
